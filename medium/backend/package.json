@@ -1,0 +1,22 @@
+{
+    "name": "backend",
+    "scripts": {
+        "dev": "wrangler dev",
+        "deploy": "wrangler deploy --minify",
+        "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    },
+    "dependencies": {
+        "@cloudflare/workerd-windows-64": "^1.20250708.0",
+        "@prisma/client": "^6.11.1",
+        "@prisma/extension-accelerate": "^2.0.2",
+        "@types/jsonwebtoken": "^9.0.10",
+        "hono": "^4.8.4",
+        "hono-pino": "^0.9.1",
+        "jsonwebtoken": "^9.0.2",
+        "pino": "^9.7.0",
+        "prisma": "^6.11.1"
+    },
+    "devDependencies": {
+        "wrangler": "^4.24.0"
+    }
+}
