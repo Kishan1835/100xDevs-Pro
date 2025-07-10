@@ -9,6 +9,7 @@
         "@cloudflare/workerd-windows-64": "^1.20250708.0",
         "@prisma/client": "^6.11.1",
         "@prisma/extension-accelerate": "^2.0.2",
+        "@tskishan3000/medium-post-common": "^1.0.0",
         "@types/jsonwebtoken": "^9.0.10",
         "hono": "^4.8.4",
         "hono-pino": "^0.9.1",
