@@ -17,5 +17,7 @@ Pass the `CloudflareBindings` as generics when instantiation `Hono`:
 
 ```ts
 // src/index.ts
-const app = new Hono<{ Bindings: CloudflareBindings }>()
+const app = new Hono<{ Bindings: CloudflareBindings }>();
 ```
+
+https://backend.sharmilakishan-2003.workers.dev
