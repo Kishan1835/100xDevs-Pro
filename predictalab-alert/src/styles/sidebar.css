@@ -1,0 +1,23 @@
+/* Sidebar exact spec */
+.sidebar {
+  width: 300px;
+  background: #1e66b3; /* navy-blue */
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding-top: 16px;
+}
+.sidebar-header { padding: 16px 20px; }
+.logo-text h2 { font-size: 14px; line-height: 1.4; }
+.nav-list { list-style: none; margin: 0; padding: 8px 0; }
+.nav-item { margin: 4px 0; }
+.nav-link {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; color: rgba(255,255,255,0.9); text-decoration: none;
+}
+.nav-link.active { background: rgba(255,255,255,0.15); border-right: 4px solid #fff; }
+.nav-icon { width: 20px; text-align: center; opacity: 0.95; }
+.sidebar-footer { margin-top: auto; padding: 16px 20px; border-top: 1px solid rgba(255,255,255,0.2); }
+.user-info { display:flex; gap:10px; align-items:center; }
+.user-name { font-weight: 600; }
+.user-role { opacity: 0.85; font-size: 12px; }

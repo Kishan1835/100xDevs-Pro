@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  reports       Report[]
+  healthMetrics HealthMetric[]
+  
+  @@map("users")
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  fileName    String
+  fileUrl     String
+  fileSize    String
+  reportType  String
+  uploadDate  DateTime @default(now())
+  analyzed    Boolean  @default(false)
+  status      String   @default("uploaded")
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  healthMetrics HealthMetric[]
+  aiInsights    AIInsight[]
+  
+  @@map("reports")
+}
+
+model HealthMetric {
+  id          String   @id @default(cuid())
+  metricType  String
+  value       Float
+  unit        String
+  normalRange String?
+  isNormal    Boolean  @default(true)
+  date        DateTime @default(now())
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  reportId    String?
+  report      Report?  @relation(fields: [reportId], references: [id], onDelete: SetNull)
+  
+  @@map("health_metrics")
+}
+
+model AIInsight {
+  id          String   @id @default(cuid())
+  type        String
+  title       String
+  description String
+  confidence  Float
+  severity    String
+  actionable  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  reportId    String
+  report      Report   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  
+  @@map("ai_insights")
+}

@@ -1,0 +1,191 @@
+{
+  "description": "Sample API Response for GET /api/schedule-logs",
+  "endpoint": "http://localhost:5000/api/schedule-logs",
+  "methods": {
+    "getAllLogs": {
+      "url": "/api/schedule-logs",
+      "method": "GET",
+      "response": {
+        "success": true,
+        "count": 3,
+        "total": 3,
+        "data": [
+          {
+            "logId": 1,
+            "itiId": 101,
+            "itiName": "Government ITI, Chennai",
+            "machineId": 12,
+            "machineName": "Lathe Machine",
+            "workerId": 10345,
+            "workerName": "Aravind Kumar",
+            "studentId": 20057,
+            "studentName": "Gobi Raj",
+            "scheduledOn": "2025-12-03T10:00:00.000Z",
+            "time": 2
+          },
+          {
+            "logId": 2,
+            "itiId": 101,
+            "itiName": "Government ITI, Chennai",
+            "machineId": 15,
+            "machineName": "Milling Machine",
+            "workerId": 10346,
+            "workerName": "Rajesh Singh",
+            "studentId": 20058,
+            "studentName": "Priya Sharma",
+            "scheduledOn": "2025-12-03T13:00:00.000Z",
+            "time": 3
+          },
+          {
+            "logId": 3,
+            "itiId": 102,
+            "itiName": "Government ITI, Coimbatore",
+            "machineId": 18,
+            "machineName": "Welding Machine",
+            "workerId": 10347,
+            "workerName": "Suresh Babu",
+            "studentId": 20059,
+            "studentName": "Karthik M",
+            "scheduledOn": "2025-12-02T09:00:00.000Z",
+            "time": 4
+          }
+        ]
+      }
+    },
+    "filterBySingleDate": {
+      "url": "/api/schedule-logs?date=2025-12-03",
+      "method": "GET",
+      "description": "Filter logs for a specific date",
+      "response": {
+        "success": true,
+        "count": 2,
+        "total": 2,
+        "data": [
+          {
+            "logId": 1,
+            "itiId": 101,
+            "itiName": "Government ITI, Chennai",
+            "machineId": 12,
+            "machineName": "Lathe Machine",
+            "workerId": 10345,
+            "workerName": "Aravind Kumar",
+            "studentId": 20057,
+            "studentName": "Gobi Raj",
+            "scheduledOn": "2025-12-03T10:00:00.000Z",
+            "time": 2
+          },
+          {
+            "logId": 2,
+            "itiId": 101,
+            "itiName": "Government ITI, Chennai",
+            "machineId": 15,
+            "machineName": "Milling Machine",
+            "workerId": 10346,
+            "workerName": "Rajesh Singh",
+            "studentId": 20058,
+            "studentName": "Priya Sharma",
+            "scheduledOn": "2025-12-03T13:00:00.000Z",
+            "time": 3
+          }
+        ]
+      }
+    },
+    "filterByDateRange": {
+      "url": "/api/schedule-logs?start=2025-12-01&end=2025-12-03",
+      "method": "GET",
+      "description": "Filter logs between two dates",
+      "response": {
+        "success": true,
+        "count": 3,
+        "total": 3,
+        "data": [
+          {
+            "logId": 1,
+            "itiId": 101,
+            "itiName": "Government ITI, Chennai",
+            "machineId": 12,
+            "machineName": "Lathe Machine",
+            "workerId": 10345,
+            "workerName": "Aravind Kumar",
+            "studentId": 20057,
+            "studentName": "Gobi Raj",
+            "scheduledOn": "2025-12-03T10:00:00.000Z",
+            "time": 2
+          },
+          {
+            "logId": 2,
+            "itiId": 101,
+            "itiName": "Government ITI, Chennai",
+            "machineId": 15,
+            "machineName": "Milling Machine",
+            "workerId": 10346,
+            "workerName": "Rajesh Singh",
+            "studentId": 20058,
+            "studentName": "Priya Sharma",
+            "scheduledOn": "2025-12-03T13:00:00.000Z",
+            "time": 3
+          },
+          {
+            "logId": 3,
+            "itiId": 102,
+            "itiName": "Government ITI, Coimbatore",
+            "machineId": 18,
+            "machineName": "Welding Machine",
+            "workerId": 10347,
+            "workerName": "Suresh Babu",
+            "studentId": 20059,
+            "studentName": "Karthik M",
+            "scheduledOn": "2025-12-02T09:00:00.000Z",
+            "time": 4
+          }
+        ]
+      }
+    },
+    "withPagination": {
+      "url": "/api/schedule-logs?limit=10&offset=0",
+      "method": "GET",
+      "description": "Get logs with pagination (backend-side, though frontend also implements client-side pagination)",
+      "response": {
+        "success": true,
+        "count": 10,
+        "total": 50,
+        "data": []
+      }
+    }
+  },
+  "queryParameters": {
+    "date": {
+      "type": "string",
+      "format": "YYYY-MM-DD",
+      "description": "Filter logs for a specific date",
+      "example": "2025-12-03"
+    },
+    "start": {
+      "type": "string",
+      "format": "YYYY-MM-DD",
+      "description": "Start date for range filter",
+      "example": "2025-12-01"
+    },
+    "end": {
+      "type": "string",
+      "format": "YYYY-MM-DD",
+      "description": "End date for range filter",
+      "example": "2025-12-03"
+    },
+    "limit": {
+      "type": "integer",
+      "description": "Maximum number of records to return",
+      "example": 10
+    },
+    "offset": {
+      "type": "integer",
+      "description": "Number of records to skip",
+      "example": 0
+    }
+  },
+  "errorResponse": {
+    "success": false,
+    "message": "Failed to fetch schedule logs",
+    "error": "Database connection error"
+  }
+}

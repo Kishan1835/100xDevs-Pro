@@ -1,0 +1,89 @@
+{
+  "description": "Sample API responses for Complaints endpoints",
+  "endpoints": {
+    "stats": {
+      "url": "GET /api/complaints/stats",
+      "description": "Returns aggregate complaint statistics for top cards",
+      "sampleResponse": {
+        "success": true,
+        "data": {
+          "raisedCount": 123,
+          "inProgressCount": 45,
+          "solvedCount": 78
+        }
+      }
+    },
+    "branches": {
+      "url": "GET /api/complaints/branches",
+      "description": "Returns complaint summary for each ITI branch",
+      "sampleResponse": {
+        "success": true,
+        "data": [
+          {
+            "itiId": 1,
+            "name": "Government ITI Mumbai",
+            "raisedCount": 25,
+            "inProgressCount": 10,
+            "solvedCount": 15,
+            "highestSeverity": "Critical",
+            "score": 60,
+            "lastUpdated": "2025-11-15T10:30:00.000Z"
+          },
+          {
+            "itiId": 2,
+            "name": "Government ITI Delhi",
+            "raisedCount": 30,
+            "inProgressCount": 5,
+            "solvedCount": 25,
+            "highestSeverity": "High",
+            "score": 83,
+            "lastUpdated": "2025-11-14T08:20:00.000Z"
+          },
+          {
+            "itiId": 3,
+            "name": "Government ITI Bangalore",
+            "raisedCount": 20,
+            "inProgressCount": 15,
+            "solvedCount": 5,
+            "highestSeverity": "Critical",
+            "score": 25,
+            "lastUpdated": "2025-11-13T14:45:00.000Z"
+          },
+          {
+            "itiId": 4,
+            "name": "Government ITI Chennai",
+            "raisedCount": 15,
+            "inProgressCount": 5,
+            "solvedCount": 10,
+            "highestSeverity": "Low",
+            "score": 67,
+            "lastUpdated": "2025-11-12T16:00:00.000Z"
+          },
+          {
+            "itiId": 5,
+            "name": "Government ITI Kolkata",
+            "raisedCount": 33,
+            "inProgressCount": 10,
+            "solvedCount": 23,
+            "highestSeverity": "High",
+            "score": 70,
+            "lastUpdated": "2025-11-11T09:15:00.000Z"
+          }
+        ]
+      }
+    }
+  },
+  "notes": {
+    "statusMapping": {
+      "raised": "All maintenance_logs where Status != 'Closed'",
+      "inProgress": "Status in ['In Progress', 'On Hold', 'Reopened']",
+      "solved": "Status = 'Closed'"
+    },
+    "severityMapping": {
+      "Critical": "At least one machine with Status = 'CRITICAL'",
+      "High": "At least one machine with Status = 'ALERT'",
+      "Low": "All machines with Status = 'HEALTHY'",
+      "Healthy": "No machines or all healthy"
+    }
+  }
+}

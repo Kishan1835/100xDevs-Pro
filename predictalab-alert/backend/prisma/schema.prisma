@@ -1,0 +1,205 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum WorkerRole {
+  POLICY_MAKER
+  TRAINING_OFFICER
+  ASSISTANT_TRAINING_OFFICER
+  LAB_PRINCIPAL
+}
+
+enum MachineStatus {
+  HEALTHY
+  ALERT
+  CRITICAL
+}
+
+model ITI {
+  ITI_ID     Int      @id @default(autoincrement())
+  Name       String
+  City       String
+  State      String
+  Address    String
+  Contact    String
+  Status     String
+  Created_At DateTime @default(now())
+  Updated_At DateTime @updatedAt
+  ITI_score  Int
+
+  machines           Machines[]
+  workers            ITI_Workers[]
+  trades             Trades[]
+  students           Students[]
+  maintenanceWorkers Maintenance_Workers[]
+  auctions           Auctions[]
+  scheduleLogs       Schedule_Logs[]
+  maintenanceLogs    Maintenance_Log[]
+}
+
+model Machines {
+  Machine_ID           Int           @id @default(autoincrement())
+  ITI_ID               Int
+  Machine_Name         String
+  Type                 String
+  Model_No             String
+  Manufacturer         String
+  Installation_Date    DateTime
+  Last_Service_Date    DateTime
+  Warranty_Expiry_Date DateTime
+  Critical_Start       DateTime?
+  Critical_End         DateTime?
+  Status               MachineStatus
+  Created_At           DateTime      @default(now())
+  Updated_At           DateTime      @updatedAt
+  Last_used            DateTime
+  Faults               Int
+
+  iti                ITI                   @relation(fields: [ITI_ID], references: [ITI_ID])
+  maintenanceWorkers Maintenance_Workers[] @relation("Machines_maintenanceWorkers")
+  maintenanceLogs    Maintenance_Log[]
+  scheduleLogs       Schedule_Logs[]
+}
+
+model Maintenance_Workers {
+  M_Worker_ID   Int      @id @default(autoincrement())
+  ITI_ID        Int
+  Name          String
+  Experience    Decimal
+  Salary        String
+  Contact       String
+  Created_At    DateTime @default(now())
+  Updated_At    DateTime @updatedAt
+  last_worked   DateTime
+  Active_Status Boolean
+  Solved_cases  Int
+  pending       String
+
+  iti             ITI               @relation(fields: [ITI_ID], references: [ITI_ID])
+  machines        Machines[]        @relation("Machines_maintenanceWorkers")
+  maintenanceLogs Maintenance_Log[]
+}
+
+model Maintenance_Log {
+  ML_ID             Int      @id @default(autoincrement())
+  ITI_ID            Int
+  Machine_ID        Int
+  M_Worker_ID       Int
+  Worker_ID         Int
+  Issue_Reported    String
+  Action_Taken      String
+  Severity          String
+  Status            String
+  Report_Date       DateTime
+  Next_Service_Date DateTime
+  On_Hold_Reason    String?
+  Created_At        DateTime @default(now())
+  Updated_At        DateTime @updatedAt
+
+  iti               ITI                 @relation(fields: [ITI_ID], references: [ITI_ID])
+  machine           Machines            @relation(fields: [Machine_ID], references: [Machine_ID])
+  maintenanceWorker Maintenance_Workers @relation(fields: [M_Worker_ID], references: [M_Worker_ID])
+  worker            ITI_Workers         @relation(fields: [Worker_ID], references: [Worker_ID])
+}
+
+model ITI_Workers {
+  Worker_ID     Int        @id @default(autoincrement())
+  ITI_ID        Int
+  Name          String
+  Role          WorkerRole
+  Experience    Int
+  Salary        Decimal
+  Contact       String
+  Created_At    DateTime   @default(now())
+  Updated_At    DateTime   @updatedAt
+  Active_Status Boolean
+
+  iti             ITI               @relation(fields: [ITI_ID], references: [ITI_ID])
+  scheduleLogs    Schedule_Logs[]
+  students        Students[]
+  inventory       Inventory[]
+  maintenanceLogs Maintenance_Log[]
+}
+
+model Trades {
+  Trade_ID      Int      @id @default(autoincrement())
+  ITI_ID        Int
+  Trade_Name    String
+  Duration      String
+  Syllabus      String
+  Certification String
+  Created_At    DateTime @default(now())
+  Updated_At    DateTime @updatedAt
+
+  iti      ITI        @relation(fields: [ITI_ID], references: [ITI_ID])
+  students Students[]
+}
+
+model Students {
+  Student_ID     Int      @id @default(autoincrement())
+  ITI_ID         Int
+  Trade_ID       Int
+  Worker_ID      Int
+  Name           String
+  Batch          String
+  Email          String
+  Gender         String
+  Year           Int
+  Admission_Date DateTime
+  Created_At     DateTime @default(now())
+  Updated_At     DateTime @updatedAt
+  Placed         Boolean  @default(false)
+
+  iti          ITI             @relation(fields: [ITI_ID], references: [ITI_ID])
+  trade        Trades          @relation(fields: [Trade_ID], references: [Trade_ID])
+  teacher      ITI_Workers     @relation(fields: [Worker_ID], references: [Worker_ID])
+  scheduleLogs Schedule_Logs[]
+}
+
+model Inventory {
+  Item_ID       Int      @id @default(autoincrement())
+  Item_Name     String
+  Quantity      Int
+  Reorder_Level Int
+  Last_Updated  DateTime @default(now())
+  Worker_ID     Int?
+
+  worker   ITI_Workers? @relation(fields: [Worker_ID], references: [Worker_ID])
+  auctions Auctions[]
+}
+
+model Auctions {
+  Item_ID      Int      @id
+  ITI_ID       Int?
+  Item_Name    String
+  Quantity     Int
+  Base_Price   Decimal
+  Last_Updated DateTime @default(now())
+  Bids         Int      @default(0)
+  Approved     Boolean  @default(false)
+  Published    Boolean  @default(false)
+
+  item Inventory @relation(fields: [Item_ID], references: [Item_ID])
+  iti  ITI?      @relation(fields: [ITI_ID], references: [ITI_ID])
+}
+
+model Schedule_Logs {
+  S_Log_ID     Int       @id @default(autoincrement())
+  ITI_ID       Int
+  Machine_ID   Int
+  Worker_ID    Int
+  Student_ID   Int
+  Time         Int
+  Scheduled_On DateTime
+  Completed_At DateTime?
+
+  iti     ITI         @relation(fields: [ITI_ID], references: [ITI_ID])
+  machine Machines    @relation(fields: [Machine_ID], references: [Machine_ID])
+  worker  ITI_Workers @relation(fields: [Worker_ID], references: [Worker_ID])
+  student Students    @relation(fields: [Student_ID], references: [Student_ID])
+}

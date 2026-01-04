@@ -1,0 +1,206 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Datasource configuration should now be moved to prisma.config.ts
+// Remove the old 'url' property to avoid runtime errors
+// See https://pris.ly/d/config-datasource for more info
+
+// Prisma schema for ITI Management System based on uploaded UML
+// Supports multi-tenant setup where each ITI has its own data
+// Role-based access via 'Users' table
+
+model ITI {
+  ITI_ID     Int      @id @default(autoincrement())
+  Name       String
+  Region     String
+  Ward       String
+  Address    String
+  Contact    String
+  Status     String
+  Created_At DateTime @default(now())
+  Updated_At DateTime @updatedAt
+  ITI_score  Int
+
+  // Relations
+  Workers      Worker[]
+  Students     Student[]
+  Trades       Trade[]
+  Machines     Machine[]
+  Users        User[]
+  Auctions     Auction[]
+  ScheduleLogs Schedule_Log[]
+}
+
+model Worker {
+  Worker_ID     Int      @id @default(autoincrement())
+  ITI_ID        Int
+  Role          String
+  Name          String
+  Experience    Int
+  Salary        Decimal // Use Decimal for high precision on currency
+  Contact       String
+  Created_At    DateTime @default(now())
+  Updated_At    DateTime @updatedAt
+  Active_Status Boolean
+
+  // Relations
+  ITI             ITI               @relation(fields: [ITI_ID], references: [ITI_ID])
+  MaintenanceLogs Maintenance_Log[]
+  ScheduleLogs    Schedule_Log[]
+  Auctions        Auction[]
+}
+
+model Student {
+  Student_ID     Int      @id @default(autoincrement())
+  ITI_ID         Int
+  Trade_ID       Int
+  Name           String
+  Batch          String
+  Year           Int
+  DOB            DateTime // Used DateTime for date fields (DOB, Admission_Date)
+  Gender         String
+  Contact        String
+  Admission_Date DateTime
+  Created_At     DateTime @default(now())
+  Updated_At     DateTime @updatedAt
+  Placed         Boolean
+
+  // Relations
+  ITI   ITI   @relation(fields: [ITI_ID], references: [ITI_ID])
+  Trade Trade @relation(fields: [Trade_ID], references: [Trade_ID])
+}
+
+model Trade {
+  Trade_ID      Int      @id @default(autoincrement())
+  ITI_ID        Int
+  Trade_Name    String
+  Duration      String
+  Syllabus      String
+  Certification String
+  Created_At    DateTime @default(now())
+  Updated_At    DateTime @updatedAt
+
+  // Relations
+  ITI      ITI       @relation(fields: [ITI_ID], references: [ITI_ID])
+  Students Student[]
+}
+
+// ----------------------------------------------------
+// Machine and Maintenance
+// ----------------------------------------------------
+
+model Machine {
+  Machine_ID           Int      @id @default(autoincrement())
+  ITI_ID               Int
+  Machine_Name         String
+  Type                 String
+  Model_No             String
+  Manufacturer         String
+  Installation_Date    DateTime
+  Last_Service_Date    DateTime
+  Warranty_Expiry_Date DateTime
+  Status               String
+  RUL                  Int // Remaining Useful Life
+  Created_At           DateTime @default(now())
+  Updated_At           DateTime @updatedAt
+  Last_used            DateTime
+  Faults               Int
+
+  // Relations
+  ITI             ITI               @relation(fields: [ITI_ID], references: [ITI_ID])
+  MaintenanceLogs Maintenance_Log[]
+  InventoryItems  Inventory[]
+  ScheduleLogs    Schedule_Log[]
+}
+
+model Maintenance_Log {
+  Log_ID            Int      @id @default(autoincrement())
+  Machine_ID        Int
+  Worker_ID         Int
+  Issue_Reported    String
+  Action_Taken      String
+  Severity          String
+  Status            Boolean
+  Report_Date       DateTime
+  Next_Service_Date DateTime
+  Created_At        DateTime @default(now())
+  Updated_At        DateTime @updatedAt
+
+  // Relations
+  Machine Machine @relation(fields: [Machine_ID], references: [Machine_ID])
+  Worker  Worker  @relation(fields: [Worker_ID], references: [Worker_ID])
+}
+
+model Inventory {
+  Item_ID       Int      @id @default(autoincrement())
+  Machine_ID    Int
+  Item_Name     String
+  Quantity      Int
+  Reorder_Level Int
+  Last_Updated  DateTime @updatedAt
+
+  // Relations
+  Machine Machine @relation(fields: [Machine_ID], references: [Machine_ID])
+}
+
+// ----------------------------------------------------
+// Auxiliary Tables
+// ----------------------------------------------------
+
+model Auction {
+  Item_ID      Int      @id @default(autoincrement())
+  ITI_ID       Int? // Added based on ITI ||--o{ Auction relationship
+  Worker_ID    Int? // Added based on Workers ||--o{ Auction relationship
+  Item_Name    String
+  Quantity     Int
+  Base_Price   Int
+  Last_Updated DateTime @updatedAt
+
+  // Relations (optional as FK was not explicitly in the column list)
+  ITI    ITI?    @relation(fields: [ITI_ID], references: [ITI_ID])
+  Worker Worker? @relation(fields: [Worker_ID], references: [Worker_ID])
+}
+
+model User {
+  User_ID       Int      @id @default(autoincrement())
+  Username      String   @unique
+  Password_Hash String
+  Role          String
+  ITI_ID        Int
+  Created_At    DateTime @default(now())
+  Last_Login    DateTime
+
+  // Relations
+  ITI          ITI            @relation(fields: [ITI_ID], references: [ITI_ID])
+  ScheduleLogs Schedule_Log[]
+}
+
+model Schedule_Log {
+  // Composite key created using the FKs and the scheduled time to ensure unique log entries
+  User_ID      Int
+  Machine_ID   Int
+  Scheduled_on DateTime
+  ITI_ID       Int
+  Created_At   DateTime @default(now())
+  Worker_ID    Int
+
+  // Relations
+  User    User    @relation(fields: [User_ID], references: [User_ID])
+  Machine Machine @relation(fields: [Machine_ID], references: [Machine_ID])
+  ITI     ITI     @relation(fields: [ITI_ID], references: [ITI_ID])
+  Worker  Worker  @relation(fields: [Worker_ID], references: [Worker_ID])
+
+  // Composite Primary Key
+  @@id([User_ID, Machine_ID, Scheduled_on])
+}

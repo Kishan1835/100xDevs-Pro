@@ -1,0 +1,78 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String        @id @default(cuid())
+  email     String        @unique
+  name      String?
+  createdAt DateTime      @default(now())
+  profile   Profile?
+  verif     Verification?
+  apps      Application[]
+}
+
+model Profile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  bio       String?
+  skills    String[] // ["react","node","ml"]
+  stacks    String[] // ["mern","flutter"]
+  college   String?
+  timezone  String? // "Asia/Kolkata"
+  github    String?
+  portfolio String?
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Verification {
+  id         String    @id @default(cuid())
+  userId     String    @unique
+  status     String    @default("pending") // pending|approved|rejected
+  docUrl     String?
+  reviewedBy String?
+  reviewedAt DateTime?
+  user       User      @relation(fields: [userId], references: [id])
+}
+
+model Event {
+  id       String        @id @default(cuid())
+  title    String
+  theme    String
+  startsAt DateTime
+  endsAt   DateTime
+  apps     Application[]
+  matches  Match[]
+}
+
+model Application {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  mode      String // "single" | "double"
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  event     Event    @relation(fields: [eventId], references: [id])
+
+  @@unique([userId, eventId])
+}
+
+model Match {
+  id      String   @id @default(cuid())
+  eventId String
+  members String[] // userIds (2 for single, 4 for double)
+  score   Float
+  state   String   @default("proposed") // proposed|accepted|declined
+  event   Event    @relation(fields: [eventId], references: [id])
+}
