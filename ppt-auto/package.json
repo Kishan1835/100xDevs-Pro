@@ -1,0 +1,22 @@
+{
+  "name": "pptx-transfer",
+  "version": "1.0.0",
+  "description": "Transfer content between PowerPoint presentations with theme-mismatch handling",
+  "main": "index.js",
+  "bin": {
+    "pptx-transfer": "./index.js"
+  },
+  "scripts": {
+    "test":  "node test.js",
+    "start": "node index.js"
+  },
+  "keywords": ["pptx", "powerpoint", "transfer", "ooxml"],
+  "license": "MIT",
+  "dependencies": {
+    "chalk":     "^5.6.2",
+    "commander": "^14.0.3",
+    "fs-extra":  "^11.3.4",
+    "jszip":     "^3.10.1",
+    "xml2js":    "^0.6.2"
+  }
+}

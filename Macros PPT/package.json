@@ -1,0 +1,25 @@
+{
+ "name": "pptx-theme-migrator",
+ "version": "1.0.0",
+ "description": "Migrate PowerPoint content to a new theme template while preserving spatial layout",
+ "main": "src/index.ts",
+ "scripts": {
+  "start": "ts-node src/index.ts",
+  "build": "tsc",
+  "lint": "eslint src/"
+ },
+ "dependencies": {
+  "commander": "^11.1.0",
+  "fs-extra": "^11.2.0",
+  "jszip": "^3.10.1",
+  "xmldom": "^0.6.0",
+  "xpath": "^0.0.34"
+ },
+ "devDependencies": {
+  "@types/fs-extra": "^11.0.4",
+  "@types/node": "^20.11.0",
+  "@types/xmldom": "^0.1.34",
+  "ts-node": "^10.9.2",
+  "typescript": "^5.3.3"
+ }
+}

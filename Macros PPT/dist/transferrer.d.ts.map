@@ -1,0 +1,1 @@
+{"version":3,"file":"transferrer.d.ts","sourceRoot":"","sources":["../src/transferrer.ts"],"names":[],"mappings":"AACA,OAAO,EAGN,aAAa,EAEb,cAAc,EAGd,MAAM,SAAS,CAAC;AAMjB,OAAO,KAAK,MAAM,OAAO,CAAC;AAK1B;;;;;EAKE;AACF,wBAAsB,aAAa,CAClC,SAAS,EAAE,KAAK,EAChB,OAAO,EAAE,aAAa,EACtB,eAAe,EAAE,MAAM,EACvB,mBAAmB,EAAE,MAAM,GACzB,OAAO,CAAC,cAAc,CAAC,CA2JzB"}
